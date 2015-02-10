@@ -34,18 +34,18 @@ version="$gittag git:${gitver:0:7} $build"
 
 options=""
 while getopts ":fv" opt; do
-	case $opt in
-		f)
-			options="$options -a"
-			;;
-		v)
-			options="$options -v"
-			echo "$program version: $version"
-			;;
-		\?)
-			echo "Invalid option: -$OPTARG" >&2
-			;;
-	esac
+    case $opt in
+        f)
+            options="$options -a"
+            ;;
+        v)
+            options="$options -v"
+            echo "$program version: $version"
+            ;;
+        \?)
+            echo "Invalid option: -$OPTARG" >&2
+            ;;
+    esac
 done
 
 $gobin install $options -ldflags "-X main.Version \"$version\"" github.com/z0rr0/go.t34.me/main
