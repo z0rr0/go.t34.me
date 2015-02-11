@@ -7,6 +7,7 @@
 package main
 
 import (
+    "os"
     "fmt"
     "flag"
     "time"
@@ -41,7 +42,7 @@ func main() {
         fmt.Printf("%v version: %v\n", Name, Version)
         return
     }
-    fmt.Printf("Program \"%v\" %v is starting...\n", Name, Version)
+    fmt.Printf("Program (PID=%v %v:%v) \"%v\" %v is starting...\n", os.Getpid(), os.Getuid(), os.Getgid(), Name, Version)
 
     utils.LoggerInit(*debug)
     cfg := utils.GetConfig(config)
