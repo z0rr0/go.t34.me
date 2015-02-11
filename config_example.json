@@ -1,0 +1,6 @@
+{
+  "database": "dbname",
+  "dbuser": "user",
+  "dbpassword": "password",
+  "dbport": 12345
+}

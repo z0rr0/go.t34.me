@@ -8,14 +8,25 @@ package utils
 
 import (
     "os"
+    "fmt"
     "log"
+    "strings"
     "io/ioutil"
+    "encoding/json"
+    "path/filepath"
 )
 
 var (
     LoggerError *log.Logger = log.New(os.Stderr, "ERROR: ", log.Ldate|log.Ltime|log.Lshortfile)
     LoggerDebug *log.Logger = log.New(ioutil.Discard, "DEBUG: ", log.Ldate|log.Lmicroseconds|log.Lshortfile)
 )
+
+type Config struct {
+    DbDatabase string `json:"database"`
+    DbUser string     `json:"dbuser"`
+    DbPassword string `json:"dbpassword"`
+    DbPort uint       `json:"dbport"`
+}
 
 // Initialization of Logger handlers
 func LoggerInit(debugmode bool) {
@@ -25,4 +36,47 @@ func LoggerInit(debugmode bool) {
     }
     LoggerDebug = log.New(debugHandle, "DEBUG: ",
         log.Ldate|log.Lmicroseconds|log.Lshortfile)
+}
+
+// It Validates file name, converts it from relative to absolute.
+func FilePath(name string) (string, error) {
+    var (
+        fullpath string
+        err error
+    )
+    fullpath = strings.Trim(name, " ")
+    if len(fullpath) < 1 {
+        return fullpath, fmt.Errorf("Empty file name")
+    }
+    if name[0] == '/' {
+        return fullpath, nil
+    }
+    fullpath, err = filepath.Abs(fullpath)
+    if err != nil {
+        return fullpath, err
+    }
+    return fullpath, nil
+}
+
+// Parse config file from JSON format.
+func GetConfig(name *string) Config {
+    var (
+        cfg Config
+        jsondata []byte
+    )
+    filename, err := FilePath(*name)
+    if err != nil {
+        LoggerError.Panicf("Can't prepare filename: %v", err)
+    }
+    if _, err := os.Stat(filename); err != nil {
+        LoggerError.Panicf("File \"%v\" not found: %v", filename, err)
+    }
+    jsondata, err = ioutil.ReadFile(filename)
+    if err != nil {
+        LoggerError.Panicf("File reading error: %v", err)
+    }
+    if err := json.Unmarshal(jsondata, &cfg); err != nil {
+        LoggerError.Panicf("Can't parse config file: %v", err)
+    }
+    return cfg
 }

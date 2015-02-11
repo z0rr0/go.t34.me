@@ -27,7 +27,7 @@ if [ ! -x "$gitbin" ]; then
 fi
 
 cd ${GOPATH}/${repo}
-gittag="`$gitbin tag | tail -1`"
+gittag="`$gitbin tag | sort --version-sort | tail -1`"
 gitver="`$gitbin log --oneline | head -1 `"
 build="`date --utc +\"%F %T\"` UTC"
 version="$gittag git:${gitver:0:7} $build"
