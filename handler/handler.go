@@ -15,9 +15,16 @@ import (
     // "github.com/z0rr0/go.t34.me/utils"
 )
 
-func Test(c *gin.Context) {
-    c.String(200, "ok")
+func Index(c *gin.Context) {
+    obj := gin.H{}
+    c.HTML(200, "index.html", obj)
 }
-func NotFound(c *gin.Context) {
-    c.String(404, "custom NotFound")
+func About(c *gin.Context) {
+    obj := gin.H{}
+    c.HTML(200, "about.html", obj)
+}
+func GetData(c *gin.Context) {
+    c.Request.ParseForm()
+    obj := gin.H{"Short": c.Request.PostForm.Get("longurl")}
+    c.HTML(200, "result.html", obj)
 }

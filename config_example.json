@@ -2,5 +2,7 @@
   "database": "dbname",
   "dbuser": "user",
   "dbpassword": "password",
-  "dbport": 12345
+  "dbport": 12345,
+  "templates": "/var/src/github.com/z0rr0/go.t34.me/templates",
+  "static": "/var/src/github.com/z0rr0/go.t34.me/media"
 }

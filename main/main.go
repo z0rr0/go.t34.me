@@ -47,11 +47,15 @@ func main() {
     utils.LoggerInit(*debug)
     cfg := utils.GetConfig(config)
     utils.LoggerDebug.Printf("port=%v, database=%v, debug=%v", *port, cfg.DbDatabase, *debug)
+    utils.LoggerDebug.Printf("static: %v", cfg.Static)
+    utils.LoggerDebug.Printf("templates: %v", cfg.Templates)
 
     router := gin.Default()
     if *debug {
         gin.SetMode(gin.DebugMode)
+        router.Static("/media", cfg.Static)
     } else {
+        // static is handled by nginx
         gin.SetMode(gin.ReleaseMode)
     }
     addr := fmt.Sprintf("localhost:%v", *port)
@@ -64,11 +68,13 @@ func main() {
     }
     utils.LoggerDebug.Printf("Listen %v", addr)
 
-    router.NoRoute(handler.NotFound)
-    router.GET("/test", handler.Test)
+    router.LoadHTMLGlob(fmt.Sprintf("%v/*", cfg.Templates))
+    router.GET("/", handler.Index)
+    router.POST("/", handler.GetData)
+    router.GET("/about", handler.About)
+
     if err := server.ListenAndServe(); err != nil {
         utils.LoggerError.Panicf("Error: %v", err)
     }
-
     fmt.Printf("Program \"%v\" %v is successfully terminated.\n", Name, Version)
 }

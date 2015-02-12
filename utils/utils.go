@@ -26,6 +26,8 @@ type Config struct {
     DbUser string     `json:"dbuser"`
     DbPassword string `json:"dbpassword"`
     DbPort uint       `json:"dbport"`
+    Templates string  `json:"templates"`
+    Static string     `json:"static"`
 }
 
 // Initialization of Logger handlers
@@ -58,6 +60,14 @@ func FilePath(name string) (string, error) {
     return fullpath, nil
 }
 
+func checkFilePaths(paths ...string) {
+    for _, path := range paths {
+        if _, err := os.Stat(path); err != nil {
+            LoggerError.Panicf("File/dir \"%v\" not found: %v", path, err)
+        }
+    }
+}
+
 // Parse config file from JSON format.
 func GetConfig(name *string) Config {
     var (
@@ -68,9 +78,7 @@ func GetConfig(name *string) Config {
     if err != nil {
         LoggerError.Panicf("Can't prepare filename: %v", err)
     }
-    if _, err := os.Stat(filename); err != nil {
-        LoggerError.Panicf("File \"%v\" not found: %v", filename, err)
-    }
+    checkFilePaths(filename)
     jsondata, err = ioutil.ReadFile(filename)
     if err != nil {
         LoggerError.Panicf("File reading error: %v", err)
@@ -78,5 +86,6 @@ func GetConfig(name *string) Config {
     if err := json.Unmarshal(jsondata, &cfg); err != nil {
         LoggerError.Panicf("Can't parse config file: %v", err)
     }
+    checkFilePaths(cfg.Templates, cfg.Static)
     return cfg
 }

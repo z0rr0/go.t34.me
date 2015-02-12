@@ -1,0 +1,64 @@
+body {
+  height: 100%;
+  padding-top: 20px;
+  padding-bottom: 40px;
+  font-family: 'PT Sans Caption', Helvetica, Verdana, Arial, sans-serif;
+}
+
+body h3 {
+  font-family: 'PT Sans Caption', Helvetica, Verdana, Arial, sans-serif;
+}
+
+/* Customize container */
+@media (min-width: 768px) {
+  .container {
+    max-width: 730px;
+  }
+}
+.container-narow > hr {
+  margin: 20px 0;
+}
+/* Main marketing message and sign up button */
+
+.jumbotron {
+  margin: 28px 0;
+  text-align: center;
+}
+.jumbotron h1 {
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 700;
+}
+.jumbotron p {
+  font-size: 16px;
+}
+
+/* Supporting marketing content */
+.marketing {
+  margin: 36px 0;
+}
+.marketing p + h4 {
+  margin-top: 28px;
+}
+
+input {
+  text-align: center;
+}
+#result {
+  text-align: center;
+}
+#shorturl {
+  font-size: 24px;
+}
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+/*
+.container {
+  width: auto;
+  max-width: 680px;
+}
+.container .credit {
+  margin: 20px 0;
+}*/
