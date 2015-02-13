@@ -60,10 +60,15 @@ func FilePath(name string) (string, error) {
     return fullpath, nil
 }
 
-func checkFilePaths(paths ...string) {
+func checkFilePaths(paths ...*string) {
     for _, path := range paths {
-        if _, err := os.Stat(path); err != nil {
-            LoggerError.Panicf("File/dir \"%v\" not found: %v", path, err)
+        if fullpath, err := FilePath(*path); err != nil {
+            LoggerError.Panicf("Can't prepare filename: %v / %v", *path, err)
+        } else {
+            *path = fullpath
+        }
+        if _, err := os.Stat(*path); err != nil {
+            LoggerError.Panicf("File/dir \"%v\" not found: %v", *path, err)
         }
     }
 }
@@ -74,18 +79,14 @@ func GetConfig(name *string) Config {
         cfg Config
         jsondata []byte
     )
-    filename, err := FilePath(*name)
-    if err != nil {
-        LoggerError.Panicf("Can't prepare filename: %v", err)
-    }
-    checkFilePaths(filename)
-    jsondata, err = ioutil.ReadFile(filename)
+    checkFilePaths(name)
+    jsondata, err := ioutil.ReadFile(*name)
     if err != nil {
         LoggerError.Panicf("File reading error: %v", err)
     }
     if err := json.Unmarshal(jsondata, &cfg); err != nil {
         LoggerError.Panicf("Can't parse config file: %v", err)
     }
-    checkFilePaths(cfg.Templates, cfg.Static)
+    checkFilePaths(&cfg.Templates, &cfg.Static)
     return cfg
 }

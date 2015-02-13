@@ -11,6 +11,7 @@ import (
     "fmt"
     "flag"
     "time"
+    "runtime"
     "net/http"
     "github.com/gin-gonic/gin"
     "github.com/z0rr0/go.t34.me/utils"
@@ -67,8 +68,14 @@ func main() {
         MaxHeaderBytes: 1 << 20,
     }
     utils.LoggerDebug.Printf("Listen %v", addr)
+    var ossep string = "/"
+    if runtime.GOOS == "windows" {
+        // config file for Windows can have only absolute paths like:
+        // C:\\Users\\user\\project\\templates
+        ossep = "\\"
+    }
 
-    router.LoadHTMLGlob(fmt.Sprintf("%v/*", cfg.Templates))
+    router.LoadHTMLGlob(fmt.Sprintf("%v%v*", cfg.Templates, ossep))
     router.GET("/", handler.Index)
     router.POST("/", handler.GetData)
     router.GET("/about", handler.About)
