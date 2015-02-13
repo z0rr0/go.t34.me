@@ -9,3 +9,11 @@
 
 * [Revel](http://revel.github.io/) - [habr](http://habrahabr.ru/post/162115/)
 * [Gin](http://gin-gonic.github.io/gin/) + [linux.org](https://www.linux.org.ru/forum/web-development/10651948)
+
+
+#### ToDo
+
+* QRCode
+* LRU cache, for example [lru](https://godoc.org/github.com/golang/groupcache/lru)
+* MongoDB interface
+* URL parser
