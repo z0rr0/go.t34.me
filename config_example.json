@@ -3,6 +3,11 @@
   "dbuser": "user",
   "dbpassword": "password",
   "dbport": 12345,
+  "email_user": "user@someserver.com",
+  "email_password": "password",
+  "email_host": "smtp.someserver.com",
+  "email_addr": "smtp.someserver.com:25",
+  "email_admin": "admin@someserver.com",
   "templates": "/var/src/github.com/z0rr0/go.t34.me/templates",
   "static": "/var/src/github.com/z0rr0/go.t34.me/media"
 }

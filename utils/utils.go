@@ -10,8 +10,11 @@ import (
     "os"
     "fmt"
     "log"
+    "bytes"
     "strings"
+    "net/smtp"
     "io/ioutil"
+    "html/template"
     "encoding/json"
     "path/filepath"
 )
@@ -22,12 +25,22 @@ var (
 )
 
 type Config struct {
-    DbDatabase string `json:"database"`
-    DbUser string     `json:"dbuser"`
-    DbPassword string `json:"dbpassword"`
-    DbPort uint       `json:"dbport"`
-    Templates string  `json:"templates"`
-    Static string     `json:"static"`
+    DbDatabase string     `json:"database"`
+    DbUser string         `json:"dbuser"`
+    DbPassword string     `json:"dbpassword"`
+    DbPort uint           `json:"dbport"`
+    EmailUser string      `json:"email_user"`
+    EmailPassword string  `json:"email_password"`
+    EmailHost string      `json:"email_host"`
+    EmailAddr string      `json:"email_addr"`
+    EmailAdmin string     `json:"email_admin"`
+    Templates string      `json:"templates"`
+    Static string         `json:"static"`
+}
+
+type SimpleEmail struct {
+    Name string
+    Msg string
 }
 
 // Initialization of Logger handlers
@@ -89,4 +102,36 @@ func GetConfig(name *string) Config {
     }
     checkFilePaths(&cfg.Templates, &cfg.Static)
     return cfg
+}
+
+// Send HTML email
+func SendEmail(cfg *Config, to []string, subject, msg string) error {
+    const mime string = "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n";
+    auth := smtp.PlainAuth(
+        "",
+        cfg.EmailUser,
+        cfg.EmailPassword,
+        cfg.EmailHost,
+    )
+    subject = fmt.Sprintf("Subject: %v\n", subject)
+    content := []byte(subject + mime + msg)
+    return smtp.SendMail(cfg.EmailAddr, auth, cfg.EmailUser, to, content)
+}
+
+func EmailToAdmin(cfg *Config, subject, msg string) error {
+    var htmltpl bytes.Buffer
+    to := []string{cfg.EmailAdmin}
+    data := SimpleEmail{"Administrator", msg}
+    template_file := filepath.Join(cfg.Templates, "simple_email.html")
+    template, err := template.ParseFiles(template_file)
+    if err != nil {
+        LoggerError.Printf("HTML parser error: %v\n", err)
+        return err
+    }
+    err = template.Execute(&htmltpl, &data)
+    if err != nil {
+        LoggerError.Println(err)
+        return err
+    }
+    return SendEmail(cfg, to, subject, htmltpl.String())
 }

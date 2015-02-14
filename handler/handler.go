@@ -15,6 +15,11 @@ import (
     // "github.com/z0rr0/go.t34.me/utils"
 )
 
+// func Test(cfg *utils.Config, c *gin.Context) {
+//     go utils.EmailToAdmin(cfg, "Test message", "It is a test message")
+//     c.String(200, "test")
+// }
+
 func Index(c *gin.Context) {
     obj := gin.H{}
     c.HTML(200, "index.html", obj)

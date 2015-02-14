@@ -75,6 +75,10 @@ func main() {
         ossep = "\\"
     }
 
+    // router.GET("/test", func(c *gin.Context){
+    //     handler.Test(&cfg, c)
+    // })
+
     router.LoadHTMLGlob(fmt.Sprintf("%v%v*", cfg.Templates, ossep))
     router.GET("/", handler.Index)
     router.POST("/", handler.GetData)
